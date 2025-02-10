@@ -5,6 +5,7 @@ interface InitialState {
   sessionLength: number;
   time: number;
   isBreak: boolean;
+  isRunning: boolean;
 }
 
 const initialState: InitialState = {
@@ -12,6 +13,7 @@ const initialState: InitialState = {
   sessionLength: 25,
   time: 25 * 60,
   isBreak: false, // ✅ New flag to track break time
+  isRunning: false,
 };
 
 export const counterSlice = createSlice({
@@ -50,6 +52,12 @@ export const counterSlice = createSlice({
           state.time = state.breakLength * 60;
         }
       }
+    },
+    start: (state) => {
+      state.isRunning = true;
+    },
+    pause: (state) => {
+      state.isRunning = false;
     },
     reset: (state) => {
       state.sessionLength = 25;
