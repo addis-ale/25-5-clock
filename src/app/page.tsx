@@ -47,7 +47,6 @@ export default function Home() {
       }, 5000);
     }
   }, [time]);
-
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-gray-900 via-black to-gray-800 p-6">
       {/* Card Container */}
