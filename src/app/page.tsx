@@ -4,6 +4,7 @@ import {
   breakLengthDec,
   breakLengthInc,
   reset,
+  runningToggle,
   sessionLengthDec,
   sessionLengthInc,
   timeDec,
@@ -21,17 +22,21 @@ export default function Home() {
     (state: RootState) => state.counter.sessionLength
   );
   const time = useSelector((state: RootState) => state.counter.time);
+  const isRunning = useSelector((state: RootState) => state.counter.isRunning);
+
   const dispatch = useDispatch();
 
   const min = String(Math.floor(time / 60)).padStart(2, "0");
   const secs = String(time % 60).padStart(2, "0");
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      dispatch(timeDec());
-    }, 1000);
+    let timer: NodeJS.Timeout;
+    if (isRunning) {
+      timer = setInterval(() => {
+        dispatch(timeDec());
+      }, 1000);
+    }
     return () => clearInterval(timer);
-  }, [time, dispatch]);
+  }, [time, dispatch, isRunning]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-gray-900 via-black to-gray-800 p-6">
@@ -89,23 +94,36 @@ export default function Home() {
       </div>
 
       {/* Timer Section */}
-      <div className="mt-8 bg-white/10 border border-white/20 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center text-white w-72">
+      <div
+        className={`mt-8 bg-white/10 border border-white/20 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center  ${
+          time < 60 ? "text-red-500" : "text-white"
+        } w-72`}
+      >
         <h2 className="text-3xl font-bold uppercase mb-2 tracking-wide">
           Session
         </h2>
-        <div className="text-6xl font-extrabold tracking-widest neon-text">
+        <div
+          className={`text-6xl font-extrabold tracking-widest neon-text ${
+            time < 60 ? "text-red-500" : "text-white"
+          }`}
+        >
           {min}:{secs}
         </div>
       </div>
 
       {/* Controls */}
       <div className="flex gap-4 mt-6">
-        <button className="p-4 bg-green-600/80 hover:bg-green-600 transition-all duration-300 rounded-full shadow-lg active:scale-90">
-          <Play size={36} className="text-white" />
+        <button
+          className="p-4 bg-green-600/80 hover:bg-green-600 transition-all duration-300 rounded-full shadow-lg active:scale-90"
+          onClick={() => dispatch(runningToggle())}
+        >
+          {isRunning ? (
+            <Pause size={36} className="text-white" />
+          ) : (
+            <Play size={36} className="text-white" />
+          )}
         </button>
-        <button className="p-4 bg-yellow-500/80 hover:bg-yellow-500 transition-all duration-300 rounded-full shadow-lg active:scale-90">
-          <Pause size={36} className="text-white" />
-        </button>
+
         <button
           className="p-4 bg-red-600/80 hover:bg-red-600 transition-all duration-300 rounded-full shadow-lg active:scale-90"
           onClick={() => dispatch(reset())}

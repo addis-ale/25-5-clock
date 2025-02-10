@@ -53,12 +53,11 @@ export const counterSlice = createSlice({
         }
       }
     },
-    start: (state) => {
-      state.isRunning = true;
+
+    runningToggle: (state) => {
+      state.isRunning = !state.isRunning;
     },
-    pause: (state) => {
-      state.isRunning = false;
-    },
+
     reset: (state) => {
       state.sessionLength = 25;
       state.breakLength = 5;
@@ -74,6 +73,8 @@ export const {
   sessionLengthInc,
   sessionLengthDec,
   timeDec,
+  runningToggle,
+
   reset,
 } = counterSlice.actions;
 
