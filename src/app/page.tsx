@@ -37,6 +37,16 @@ export default function Home() {
     }
     return () => clearInterval(timer);
   }, [time, dispatch, isRunning]);
+  useEffect(() => {
+    if (time === 5) {
+      const beepSound = new Audio("/alarm-clock.mp3");
+      beepSound.play();
+      setTimeout(() => {
+        beepSound.pause();
+        beepSound.currentTime = 0;
+      }, 5000);
+    }
+  }, [time]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-gray-900 via-black to-gray-800 p-6">
